@@ -1,0 +1,26 @@
+﻿@model CoverType
+
+<form method="post" asp-action="Edit">
+    <div class="border p-3 mt-4">
+        <div class="row pd-2">
+            <h2>Edit CoverType</h2>
+            <hr/>
+        </div>
+        <div asp-validation-summary="All"></div> @*hiện tất cả lỗi ỡ 1 khu vực*@
+            <div class="mb-3">
+                <label asp-for="Name">Name</label>
+                <input asp-for="Name"class="form-control"/>
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+            <button type="submit" class="btn btn-primary">
+                Update
+            </button>
+        <a asp-controller="CoverType" asp-action="Index">Back to list</a>
+    </div>
+</form>
+
+@section Scripts
+{
+    @*Validate ở client không chạy tới sever*@
+  <partial name="_ValidationScriptsPartial"/>
+}

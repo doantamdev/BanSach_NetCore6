@@ -1,0 +1,8 @@
+﻿Thanh toán thành công
+4242 4242 4242 4242
+
+Cần xác thực để thanh toán
+4000 0025 0000 3155
+
+Thanh toán bị từ chối
+4000 0000 0000 9995
