@@ -4,9 +4,11 @@ using BanSach.DataAccess.Repository.IRepository;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
-using Bansach.Utility;
 using Stripe;
 using BanSach.DataAccess.DbInitializer;
+using Bansach.Utility;
+using BanSach.Models;
+
 
 
 
@@ -29,6 +31,27 @@ builder.Services.Configure<StripeSettings>(builder.Configuration.GetSection("Str
 
 builder.Services.AddIdentity<IdentityUser, IdentityRole>().AddDefaultTokenProviders()
     .AddEntityFrameworkStores<ApplicationDbContext>();
+
+
+builder.Services.AddAuthentication().AddGoogle(googleOptions => {
+    googleOptions.ClientId = "935672317301-3ftl0bokj4dh8k1lg6di80m76jteiq73.apps.googleusercontent.com";
+    googleOptions.ClientSecret = "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";
+})
+    .AddFacebook(facebookOptions => {
+    // Đọc cấu hình
+    IConfigurationSection facebookAuthNSection = builder.Configuration.GetSection("Authentication:Facebook");
+    facebookOptions.AppId = facebookAuthNSection["AppId"];
+    facebookOptions.AppSecret = facebookAuthNSection["AppSecret"];
+    // Thiết lập đường dẫn Facebook chuyển hướng đến
+    //facebookOptions.CallbackPath = "/signin-facebook";
+});
+
+//thêm Email Configs
+//var emailConfig = builder.Configuration.GetSection("EmailConfiguration").Get<EmailConfiguration>();
+//builder.Services.AddSingleton(emailConfig);
+
+//builder.Services.AddScoped<IEmailService,EmailService>();
+
 builder.Services.AddScoped<IEmailSender,EmailSender>();
 builder.Services.ConfigureApplicationCookie(options =>
 {
