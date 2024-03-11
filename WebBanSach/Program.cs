@@ -51,8 +51,9 @@ builder.Services.AddAuthentication().AddGoogle(googleOptions => {
 //builder.Services.AddSingleton(emailConfig);
 
 //builder.Services.AddScoped<IEmailService,EmailService>();
-
 builder.Services.AddScoped<IEmailSender,EmailSender>();
+
+
 builder.Services.ConfigureApplicationCookie(options =>
 {
     options.LoginPath = $"/Identity/Account/Login";

@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using System.IO;
 
 
+
 namespace WebBanSach.Areas.Admin.Controllers
 {
     [Area("Admin")]
@@ -28,7 +29,11 @@ namespace WebBanSach.Areas.Admin.Controllers
         public IActionResult Upsert(int? id)
         {
             ProductVM productVM = new ProductVM();
+
             productVM.product = new Product();
+
+        
+
             productVM.CategoryList = _unitOfWork.Category.GetAll().Select(
                 u => new SelectListItem
                 {

@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace BanSach.DataAccess.Repository
 {
-    public class EmailService : IEmailService
+    public class EmailService 
     {
         private readonly EmailConfiguration _emailConfig;
         public EmailService(EmailConfiguration emailConfig) => _emailConfig = emailConfig;

@@ -9,6 +9,7 @@ namespace BanSach.DataAccess.Repository.IRepository
 {
     public interface IEmailService
     {
-        void SendEmail(Message message);
+        Task SendEmailAsync(string email, string subject, string message);
     }
+
 }
