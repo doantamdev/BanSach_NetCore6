@@ -21,5 +21,9 @@ namespace BanSach.DataAccess.Data
 
         public DbSet<OrderHeader> OrderHeaders { get; set; }
         public DbSet<OrderDetail> OrderDetails { get; set; }
+
+        public DbSet<Noti> Notifications { get; set; }
+
+        public DbSet<Chat> RespostaChat { get; set; }
     }
 }

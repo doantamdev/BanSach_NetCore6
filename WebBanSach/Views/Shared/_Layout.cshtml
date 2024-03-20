@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="~/css/BootSwatch.css" asp-append-version="true" />  
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
     <link rel="stylesheet" href="//cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css" />
+    <link href="~/notifications/ikr.notification.css" rel="stylesheet" />
 
 </head>
 <body>
@@ -33,6 +34,7 @@
                                 <a class="dropdown-item" asp-area="Admin" asp-area="" asp-controller="CoverType" asp-action="Index">Cover Type</a>
                                 <a class="dropdown-item" asp-area="Admin" asp-area="" asp-controller="Product" asp-action="Index">Product</a>
                                 <a class="dropdown-item" asp-area="Admin" asp-area="" asp-controller="Company" asp-action="Index">Company</a>
+                                <a class="dropdown-item" asp-area="Admin" asp-area="" asp-controller="Chats" asp-action="Index">Chat Bot</a>
 
                                 <div class="dropdown-divider"></div>
 
@@ -49,7 +51,10 @@
                             </a>
                         </li>
                     </ul>
+                    <div id="noti_Container">
+                    </div>
                     <partial name="_LoginPartial" />
+                   
                 </div>
             </div>
         </nav>
@@ -69,15 +74,49 @@
     </footer>
 
 
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <!-- Bao gồm thư viện jQuery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="//cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
     <script src="https://cdn.tiny.cloud/1/cp2ykoh1gb74tyamic8rmmusx6hwatawtieg88ywbzyzrv35/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
+    <script src="~/notifications/ikr.notificationplugin.js"></script>
 
-
+    
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
+
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        console.log("Sending AJAX request..."); // Kiểm tra xem yêu cầu AJAX đã được gửi hay không
+        $("#noti_Container").ikrNotificationSetup();
+        $.ajax({
+            type: "GET",
+            dataType: "json",
+            url: "/Customer/Notifications/GetNotifications", // Sửa đường dẫn URL ở đây
+            traditional: true,
+            contentType: "application/json;charset=utf-8",
+            success: function (data) {
+                console.log("Success: ", data);
+                var notifications = data;
+                $("#noti_Container").ikrNotificationCount({
+                    NotificationList: notifications,
+                    NotiFromPropName: "FromUserName",
+                    ListTitlePropName: "NotiHeader",
+                    ListBodyPropName: "NotiBody",
+                    ControllerName: "Notifications",
+                    ActionName: "AllNotifications"
+                });
+            },
+            error: function (error) {
+                console.error("Error: ", error);
+            }
+        });
+
+    });
+</script> 

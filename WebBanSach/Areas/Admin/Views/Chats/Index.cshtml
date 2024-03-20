@@ -1,0 +1,91 @@
+﻿@model IEnumerable<Chat>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Reply)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Message)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Reply)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Message)
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@{
+    ViewData["Title"] = "ChatBot Page";
+}
+<br />
+
+
+<div class="container">
+
+    <div class="col-md-12">
+
+        <textarea id="displaymessage" cols="100" rows="20">Chào bạn, tôi có thể hỗ trợ gì cho bạn?@Html.Raw("\n")  
+            Nhấn 1 nếu bạn đang gặp vấn đề kỹ thuật @Html.Raw("\n")
+            Nhấn 2 nếu bạn đang gặp vấn đề về thanh toán @Html.Raw("\n")
+            Nhấn 3 nếu bạn đang gặp vấn đề khi đăng nhập @Html.Raw("\n")
+            Nhấn 4 nếu bạn đang gặp vấn đề hiển thị sản phẩm @Html.Raw("\n")
+            Nhấn 5 nếu bạn đang gặp vấn đề sắp xếp hiển thị @Html.Raw("\n")
+            Nhấn 6 nếu bạn đang gặp vấn đề về tốc độ trang web @Html.Raw("\n")
+            Nhấn 7 nếu bạn đang gặp vấn đề xem hình ảnh sản phẩm @Html.Raw("\n")
+            Nhấn 8 nếu bạn đang gặp vấn đề giao hàng @Html.Raw("\n")
+            Nhấn 9 nếu bạn đang cần gặp trực tiếp quản lý @Html.Raw("\n")
+        </textarea>
+
+        <br />
+        <label> Message :</label> <input type="text" id="message" style="width:500px" />
+        <input id="Send" type="button" value="Send" />
+
+    </div>
+
+</div>
+<script src="~/lib/jquery/dist/jquery.js"></script>
+<script>
+    $(function () {
+
+        $("#Send").click(function () {
+
+            var message = $("#message").val();
+            console.log('1')
+            $.ajax({
+                type: "POST",
+                url: "/api/Chat",
+                data: { message: message },
+                success: function (data) {
+                    $("#displaymessage").append(" >> ChatBotCuaTam : " + message + "\n");
+                    $("#displaymessage").append(data.reply + "\n");
+                    $("#message").val("");
+                },
+                error: function (xhr, status, error) {
+                    console.error(error);
+                }
+            });
+        });
+    });
+
+</script>

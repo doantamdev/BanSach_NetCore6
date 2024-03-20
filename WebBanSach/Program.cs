@@ -8,6 +8,7 @@ using Stripe;
 using BanSach.DataAccess.DbInitializer;
 using Bansach.Utility;
 using BanSach.Models;
+using WebBanSach.Common;
 
 
 
@@ -25,8 +26,11 @@ builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IDbInitializer, DbInitializer>();
 builder.Services.AddDbContext<ApplicationDbContext>(
         options => options.UseSqlServer(
-            builder.Configuration.GetConnectionString("DefaultConnection")
+            builder.Configuration.GetConnectionString("DefaultConnection")     
     ));
+
+Global.ConnectionString =  builder.Configuration.GetConnectionString("DefaultConnection");
+
 builder.Services.Configure<StripeSettings>(builder.Configuration.GetSection("Stripe"));//ánh xạ setting Stripe
 
 builder.Services.AddIdentity<IdentityUser, IdentityRole>().AddDefaultTokenProviders()
@@ -52,6 +56,7 @@ builder.Services.AddAuthentication().AddGoogle(googleOptions => {
 
 //builder.Services.AddScoped<IEmailService,EmailService>();
 builder.Services.AddScoped<IEmailSender,EmailSender>();
+builder.Services.AddScoped<INotiService, NotiService>();
 
 
 builder.Services.ConfigureApplicationCookie(options =>
