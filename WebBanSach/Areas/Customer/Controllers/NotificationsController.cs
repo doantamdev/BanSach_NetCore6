@@ -25,14 +25,21 @@ namespace WebBanSach.Areas.Customer.Controllers
             return View();
         }
 
-        [HttpGet] 
+        [HttpGet]
         public JsonResult GetNotifications(bool isGetOnlyUnread = false)
         {
-            _logger.LogError("da toi");
-            string nIDUser = "3a67f634-82ec-4deb-ae25-973c4a56b20a";
+            // Lấy UserId từ session
+            string nIDUser = HttpContext.Session.GetString("UserId");
+
+            if (string.IsNullOrEmpty(nIDUser))
+            {
+                return Json(new { error = "User not logged in" });
+            }
+
             _oNotifications = new List<Noti>();
             _oNotifications = _notiService.GetNotification(nIDUser, isGetOnlyUnread);
             return Json(_oNotifications);
         }
+
     }
 }

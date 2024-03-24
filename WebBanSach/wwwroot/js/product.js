@@ -29,6 +29,9 @@ function loadDatatable() {
 
                          <a onClick=Delete('/Admin/Product/DeletePost/${data}') class="btn btn-danger">
                            <i class="bi bi-trash3"></i></a>
+
+                           <a onClick=Clone('/Admin/Product/CloneBook/${data}') class="btn btn-danger">
+                          <i class="bi bi-patch-plus-fill"></i></a>
                         </div>
                     `
                 }
@@ -66,4 +69,35 @@ function Delete(url) { //api
             })
         }
     })
+}
+
+function Clone(url) {
+    Swal.fire({
+        title: 'Are you sure?',
+        text: "This action will clone the product!",
+        icon: 'info',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, clone it!'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            $.ajax({
+                url: url,
+                type: "POST",
+                success: function (data) {
+                    if (data.success) {
+                        toastr.success(data.message);
+                        // Reload datatable
+                        dataTable.ajax.reload();
+                    } else {
+                        toastr.error(data.message);
+                    }
+                },
+                error: function (xhr, status, error) {
+                    toastr.error("An error occurred while cloning the product.");
+                }
+            });
+        }
+    });
 }

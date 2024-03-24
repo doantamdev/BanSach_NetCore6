@@ -9,9 +9,14 @@ using System.Threading.Tasks;
 
 namespace BanSach.Models
 {
-    public class Product
+    public interface BooksPrototype
+    {
+        BooksPrototype Clone();
+    }
+    public class Product : BooksPrototype
     {
         [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
         [Required]
         public string Title { get; set; }
@@ -52,5 +57,22 @@ namespace BanSach.Models
         [ForeignKey("CoverTypeId")]
         public CoverType CoverType { get; set; }
 
+        public BooksPrototype Clone()
+        {
+            var cloneProduct = new Product
+            {
+                Title = this.Title,
+                Description = this.Description,
+                ISBN = this.ISBN,
+                Author = this.Author,
+                ListPrice = this.ListPrice,
+                Price50 = this.Price50,
+                Price100 = this.Price100,
+                ImageUrl = this.ImageUrl,
+                CategoryId = this.CategoryId,
+                CoverTypeId = this.CoverTypeId
+            };
+            return cloneProduct;
+        }
     }
 }

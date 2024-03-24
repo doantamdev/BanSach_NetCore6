@@ -38,18 +38,23 @@ builder.Services.AddIdentity<IdentityUser, IdentityRole>().AddDefaultTokenProvid
     .AddEntityFrameworkStores<ApplicationDbContext>();
 
 
-builder.Services.AddAuthentication().AddGoogle(googleOptions => {
-    googleOptions.ClientId = "935672317301-3ftl0bokj4dh8k1lg6di80m76jteiq73.apps.googleusercontent.com";
-    googleOptions.ClientSecret = "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";
-})
+builder.Services.AddAuthentication()
+    .AddGoogle(googleOptions => {
+        // Đọc cấu hình
+        IConfigurationSection googleAuthNSection = builder.Configuration.GetSection("Authentication:Google");
+        googleOptions.ClientId = googleAuthNSection["ClientId"];
+        googleOptions.ClientSecret = googleAuthNSection["ClientSecret"];
+    })
     .AddFacebook(facebookOptions => {
-    // Đọc cấu hình
-    IConfigurationSection facebookAuthNSection = builder.Configuration.GetSection("Authentication:Facebook");
-    facebookOptions.AppId = facebookAuthNSection["AppId"];
-    facebookOptions.AppSecret = facebookAuthNSection["AppSecret"];
-    // Thiết lập đường dẫn Facebook chuyển hướng đến
-    //facebookOptions.CallbackPath = "/signin-facebook";
-});
+        // Đọc cấu hình
+        IConfigurationSection facebookAuthNSection = builder.Configuration.GetSection("Authentication:Facebook");
+        facebookOptions.AppId = facebookAuthNSection["AppId"];
+        facebookOptions.AppSecret = facebookAuthNSection["AppSecret"];
+        // Thiết lập đường dẫn Facebook chuyển hướng đến
+        // facebookOptions.CallbackPath = "/signin-facebook";
+    });
+
+builder.Services.AddSession();
 
 //thêm Email Configs
 //var emailConfig = builder.Configuration.GetSection("EmailConfiguration").Get<EmailConfiguration>();
@@ -94,7 +99,7 @@ SeedDatabase();
 
 app.UseAuthentication();
 app.UseAuthorization();
-
+app.UseSession();
 
 app.MapRazorPages(); //map identity vs project
 app.MapControllerRoute(

@@ -25,18 +25,23 @@ namespace WebBanSach.Areas.Identity.Pages.Account
 
         public async Task<IActionResult> OnPost(string returnUrl = null)
         {
+            // Đăng xuất người dùng
             await _signInManager.SignOutAsync();
             _logger.LogInformation("User logged out.");
+
+            // Xóa dữ liệu trong session
+            HttpContext.Session.Clear(); // Hoặc có thể sử dụng HttpContext.Session.Remove("UserId") nếu bạn chỉ muốn xóa một key cụ thể
+
             if (returnUrl != null)
             {
                 return LocalRedirect(returnUrl);
             }
             else
             {
-                // This needs to be a redirect so that the browser performs a new
-                // request and the identity for the user gets updated.
-                return RedirectToPage();
+                // Chuyển hướng đến trang chủ hoặc trang đăng nhập, tùy thuộc vào logic của bạn
+                return RedirectToPage("/Index");
             }
         }
+
     }
 }

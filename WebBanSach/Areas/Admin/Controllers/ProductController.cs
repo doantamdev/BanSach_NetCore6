@@ -146,5 +146,21 @@ namespace WebBanSach.Areas.Admin.Controllers
         }
 
         #endregion
+
+        [HttpPost]
+        public ActionResult CloneBook(int id)
+        {
+            var item = _unitOfWork.Product.GetFirstOrDefault(u => u.Id == id);
+            if (item != null)
+            {
+                // Sử dụng Prototype
+                var cloneBook = item.Clone();
+                _unitOfWork.Product.Add((Product)cloneBook);
+                _unitOfWork.Save();
+                return Json(new { success = true });
+            }
+            return Json(new { success = false });
+        }
+
     }
 }

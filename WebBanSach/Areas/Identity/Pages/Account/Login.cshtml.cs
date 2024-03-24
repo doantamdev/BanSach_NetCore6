@@ -14,6 +14,7 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
+using System.Security.Claims;
 
 namespace WebBanSach.Areas.Identity.Pages.Account
 {
@@ -21,11 +22,15 @@ namespace WebBanSach.Areas.Identity.Pages.Account
     {
         private readonly SignInManager<IdentityUser> _signInManager;
         private readonly ILogger<LoginModel> _logger;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public LoginModel(SignInManager<IdentityUser> signInManager, ILogger<LoginModel> logger)
+        public LoginModel(SignInManager<IdentityUser> signInManager,
+            ILogger<LoginModel> logger,
+            IHttpContextAccessor httpContextAccessor)
         {
             _signInManager = signInManager;
             _logger = logger;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         /// <summary>
@@ -115,6 +120,14 @@ namespace WebBanSach.Areas.Identity.Pages.Account
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User logged in.");
+                    // Lấy Id của người dùng từ AppUser
+                    var user = await _signInManager.UserManager.FindByEmailAsync(Input.Email);
+
+                    // Lấy Id của người dùng từ AppUser
+                    var userId = user.Id;
+
+                    // Lưu Id của người dùng vào session
+                    HttpContext.Session.SetString("UserId", userId);
                     return LocalRedirect(returnUrl);
                 }
                 if (result.RequiresTwoFactor)
