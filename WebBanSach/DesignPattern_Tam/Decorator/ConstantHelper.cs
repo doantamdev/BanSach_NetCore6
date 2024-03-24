@@ -1,4 +1,4 @@
-﻿namespace WebBanSach.DesignPattern_Tam
+﻿namespace WebBanSach.DesignPattern_Tam.Decorator
 {
     public class ConstantHelper
     {

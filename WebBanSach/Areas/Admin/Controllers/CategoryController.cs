@@ -2,6 +2,7 @@
 using BanSach.DataAccess.Repository.IRepository;
 using BanSach.Models;
 using Microsoft.AspNetCore.Mvc;
+using WebBanSach.DesignPattern_Tam.Command;
 
 
 namespace WebBanSach.Areas.Admin.Controllers
@@ -10,9 +11,13 @@ namespace WebBanSach.Areas.Admin.Controllers
     public class CategoryController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;
-        public CategoryController(IUnitOfWork unitOfWork)
+        private readonly ApplicationDbContext _db;
+        private static Stack<IUndoItem> _undoItem = new Stack<IUndoItem>();
+        public CategoryController(IUnitOfWork unitOfWork, Stack<IUndoItem> undoItem,ApplicationDbContext db)
         {
             _unitOfWork = unitOfWork;
+            _undoItem = undoItem;
+            _db = db;
         }
         public IActionResult Index()
         {
@@ -71,19 +76,29 @@ namespace WebBanSach.Areas.Admin.Controllers
             }
             return View(cate);
         }
+
         public IActionResult Delete(int? id)
         {
             if (id == null || id == 0)
             {
                 return NotFound();
             }
+
             var cateFromDb = _unitOfWork.Category.GetFirstOrDefault(u => u.Id == id);
             if (cateFromDb == null)
             {
                 return NotFound();
             }
-            return View(cateFromDb);
+
+            var command = new DeleteCommand<Category>(_db,id.Value);
+            _undoItem.Push(command);
+            command.Execute();
+
+            return RedirectToAction("Index");
         }
+
+
+        // Áp dụng Command Pattern để xoá
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken] //chống giả mạo method
         public IActionResult DeletePost(int? id)
@@ -93,15 +108,32 @@ namespace WebBanSach.Areas.Admin.Controllers
             {
                 return NotFound();
             }
+
+            _unitOfWork.Category.Remove(cateFromDb);
+            _unitOfWork.Save();
+            TempData["Sucess"] = "Delete Category Sucessfull";
+
+            return RedirectToAction("Index");
+        }
+
+
+
+        // Áp dụng Command Pattern để Undo
+        public IActionResult Undo()
+        {
+            if (_undoItem.Count > 0)
+            {
+                var undoCommand = _undoItem.Pop();
+                undoCommand.Undo();
+                TempData["Success"] = "Undo operation successful.";
+            }
             else
             {
-                _unitOfWork.Category.Remove(cateFromDb);
-                _unitOfWork.Save();
-                TempData["Sucess"] = "Delete Category Sucessfull";
-                return RedirectToAction("Index");
+                TempData["Error"] = "No undo operations available.";
             }
 
-            return View(cateFromDb);
+            return RedirectToAction("Index");
         }
+
     }
 }

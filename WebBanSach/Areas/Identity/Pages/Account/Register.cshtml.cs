@@ -24,6 +24,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
 using WebBanSach.DesignPattern_Tam;
+using WebBanSach.DesignPattern_Tam.Decorator;
 
 namespace WebBanSach.Areas.Identity.Pages.Account
 {

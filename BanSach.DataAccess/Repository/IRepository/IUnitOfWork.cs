@@ -12,5 +12,8 @@
         IOrderHeaderRepository OrderHeader { get; }
         IOrderDetailRepository OrderDetail { get; }
         void Save();
+
+
+        IRepository<T> GetRepository<T>() where T : class;
     }
 }

@@ -1,5 +1,6 @@
 ﻿using BanSach.DataAccess.Data;
 using BanSach.DataAccess.Repository.IRepository;
+using BanSach.Models;
 
 namespace BanSach.DataAccess.Repository
 {
@@ -36,6 +37,22 @@ namespace BanSach.DataAccess.Repository
         public void Save()
         {
             _db.SaveChanges();
+        }
+
+        public IRepository<T> GetRepository<T>() where T : class
+        {
+            if (typeof(T) == typeof(Category))
+            {
+                return new CategoryRepository(_db) as IRepository<T>;
+            }
+            else if (typeof(T) == typeof(CoverType))
+            {
+                return new CoverTypeRepository(_db) as IRepository<T>;
+            }
+            else
+            {
+                throw new ArgumentException("Invalid repository type.");
+            }
         }
     }
 }

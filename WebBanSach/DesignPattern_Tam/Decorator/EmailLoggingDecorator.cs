@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Net;
 using System.Net.Mail;
-using WebBanSach.DesignPattern_Tam;
 
-namespace WebBanSach.DesignPattern_Tam
+namespace WebBanSach.DesignPattern_Tam.Decorator
 {
     public class EmailLoggingDecorator
     {
@@ -17,7 +16,7 @@ namespace WebBanSach.DesignPattern_Tam
                     client.EnableSsl = true;
                     client.Credentials = new NetworkCredential(ConstantHelper.emailSender, ConstantHelper.passwordSender);
                     client.DeliveryMethod = SmtpDeliveryMethod.Network;
-                    client.Timeout = 10000; // Timeout set to 10 seconds
+                    client.Timeout = 10000;
 
                     if (!string.IsNullOrEmpty(attachFile))
                     {

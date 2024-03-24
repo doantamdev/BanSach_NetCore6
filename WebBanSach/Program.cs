@@ -9,6 +9,7 @@ using BanSach.DataAccess.DbInitializer;
 using Bansach.Utility;
 using BanSach.Models;
 using WebBanSach.Common;
+using WebBanSach.DesignPattern_Tam.Command;
 
 
 
@@ -57,6 +58,10 @@ builder.Services.AddAuthentication().AddGoogle(googleOptions => {
 //builder.Services.AddScoped<IEmailService,EmailService>();
 builder.Services.AddScoped<IEmailSender,EmailSender>();
 builder.Services.AddScoped<INotiService, NotiService>();
+builder.Services.AddSingleton<Stack<IUndoItem>>();
+
+builder.Services.AddTransient(typeof(DeleteCommand<>)); // Đảm bảo DeleteCommand được đăng ký
+
 
 
 builder.Services.ConfigureApplicationCookie(options =>
@@ -104,6 +109,6 @@ void SeedDatabase()
     using (var scope = app.Services.CreateScope())
     {
         var dbInitializer = scope.ServiceProvider.GetRequiredService<IDbInitializer>();
-        dbInitializer.Initialize();
+        dbInitializer.Initialize(); 
     }
 }
