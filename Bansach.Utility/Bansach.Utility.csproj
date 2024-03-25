@@ -9,8 +9,11 @@
   <ItemGroup>
     <PackageReference Include="MailKit" Version="4.3.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.Facebook" Version="6.0.27" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.MicrosoftAccount" Version="6.0.25" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="6.0.25" />
     <PackageReference Include="MimeKit" Version="4.3.0" />
+    <PackageReference Include="QRCoder" Version="1.4.1" />
+    <PackageReference Include="QRCoder-ImageSharp" Version="0.10.0" />
   </ItemGroup>
 
 </Project>

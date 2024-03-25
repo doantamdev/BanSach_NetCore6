@@ -8,6 +8,9 @@
                 <h1 class="text-white-50">@Model.Product.Title</h1>
                 <p class="text-warning">by @Model.Product.Author</p>
             </div>
+
+            <img src="@ViewBag.QRCodeImageBytes" class="img-thumbnail" style="width: 100px" />
+
             <div class="col-12 col-md-6 text-end pt-4">
                 <span class="badge bg-info pt-2" style="height:30px;">@Model.Product.CoverType.Name</span>
                 <span class="badge bg-warning pt-2" style="height:30px;">@Model.Product.Category.Name</span>

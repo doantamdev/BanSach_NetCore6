@@ -1,5 +1,7 @@
 ﻿@page
+@using System.Security.Claims
 @model IndexModel
+@inject SignInManager<IdentityUser> SignInManager
 @{
     ViewData["Title"] = "Profile";
     ViewData["ActivePage"] = ManageNavPages.Index;
@@ -22,6 +24,12 @@
             </div>
             <button id="update-profile-button" type="submit" class="w-100 btn btn-lg btn-primary">Save</button>
         </form>
+
+        <div style="padding: 20px 0">
+            <a asp-area="CommandPattern" asp-controller="ResetPass" asp-action="ResetPass" asp-route-id="@SignInManager.Context.User.FindFirstValue(ClaimTypes.NameIdentifier)" style="border:none; padding: 5px 25px; border-radius: 5px; font-weight: bold">
+                Reset password
+            </a>
+        </div>
     </div>
 </div>
 

@@ -66,6 +66,15 @@ builder.Services.ConfigureApplicationCookie(options =>
     options.AccessDeniedPath = $"/Identity/Account/AccessDenied";
 }); //cấu hình lại
 
+//Cấu hình login microsoft
+builder.Services.AddAuthentication()
+.AddMicrosoftAccount(micorosoftOptions => {
+    micorosoftOptions.ClientId = builder.Configuration.GetSection("MicrosoftAccountSettings")
+.GetValue<string>("AppId");
+    micorosoftOptions.ClientSecret = builder.Configuration.GetSection("MicrosoftAccountSettings")
+.GetValue<string>("AppSecret");
+});
+
 //builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
 //    .AddEntityFrameworkStores<ApplicationDbContext>();
 

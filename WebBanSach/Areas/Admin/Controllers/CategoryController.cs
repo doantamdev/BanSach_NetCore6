@@ -2,6 +2,7 @@
 using BanSach.DataAccess.Repository.IRepository;
 using BanSach.Models;
 using Microsoft.AspNetCore.Mvc;
+using WebBanSach.Areas.Admin.DecoratorPattern;
 
 
 namespace WebBanSach.Areas.Admin.Controllers
@@ -27,17 +28,27 @@ namespace WebBanSach.Areas.Admin.Controllers
         [ValidateAntiForgeryToken] //chống giả mạo method
         public IActionResult Create(Category cate)
         {
+            BaseValidate baseValidate = new BaseValidate();
+            CateValidateDecorator CateValidator = new CateValidateDecorator(baseValidate);
+
             if (cate.Name == cate.DisplayOrder.ToString())
             {
                 ModelState.AddModelError("Name", "The Name must not same displayorder"); //add validate
             }
-            if (ModelState.IsValid) //thỏa Validate
+
+            if (ModelState.IsValid && CateValidator.CateValidate(cate)) //thỏa Validate
             {
                 _unitOfWork.Category.Add(cate);
                 _unitOfWork.Save();
                 TempData["Sucess"] = "Category Create Sucessfull";
                 return RedirectToAction("Index");
             }
+            else
+            {
+                TempData["Failed"] = "Category Create failed!";
+                return RedirectToAction("Index");
+            }
+
             return View(cate);
         }
         public IActionResult Edit(int? id)

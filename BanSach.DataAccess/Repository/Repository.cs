@@ -38,6 +38,58 @@ namespace BanSach.DataAccess.Repository
             return query.ToList();
         }
 
+        public IEnumerable<T> GetAllByNameAsending(Expression<Func<T, string>> orderBy, bool ascendingOrder = true, Expression<Func<T, bool>>? filter = null, string? includeProperties = null)
+        {
+            IQueryable<T> query = DbSet;
+            if (filter != null)
+            {
+                query = query.Where(filter);
+            }
+
+            if (includeProperties != null)
+            {
+                foreach (var item in includeProperties.Split(','))
+                {
+                    query = query.Include(item);
+                }
+            }
+
+            if (ascendingOrder)
+            {
+                query = query.OrderBy(orderBy);
+            }
+            else
+            {
+                query = query.OrderByDescending(orderBy);
+            }
+
+            return query.ToList();
+        }
+
+        public IEnumerable<T> GetAllByNameDesending(Expression<Func<T, string>> orderBy, bool desendingOrder = true, Expression<Func<T, bool>>? filter = null, string? includeProperties = null)
+        {
+            IQueryable<T> query = DbSet;
+            if (filter != null)
+            {
+                query = query.Where(filter);
+            }
+
+            if (includeProperties != null)
+            {
+                foreach (var item in includeProperties.Split(','))
+                {
+                    query = query.Include(item);
+                }
+            }
+
+            if (desendingOrder)
+            {
+                query = query.OrderByDescending(orderBy);
+            }
+
+            return query.ToList();
+        }
+
         public T GetFirstOrDefault(Expression<Func<T, bool>> filter, string? includeProperties = null, bool tracked = true)
         {
             IQueryable<T> query;
