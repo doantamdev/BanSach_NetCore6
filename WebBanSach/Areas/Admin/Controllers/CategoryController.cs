@@ -3,6 +3,7 @@ using BanSach.DataAccess.Repository.IRepository;
 using BanSach.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using WebBanSach.DesignPattern_MinhHieu.Builder;
 using WebBanSach.DesignPattern_Tam.Command;
 using WebBanSach.DesignPattern_Tam.Observer;
 
@@ -42,6 +43,14 @@ namespace WebBanSach.Areas.Admin.Controllers
             }
             if (ModelState.IsValid) //thỏa Validate
             {
+                //ap dung Builder
+                //var cateBuilder = new CategoryBuilder()
+                //.BuilderWithName(cate.Name)
+                //.BuilderWithDisplayOrder(cate.DisplayOrder)
+                //.BuilderWithCreateDatetimer(cate.CreateDatetime);
+                //var newSocialMediaPlugin = cateBuilder.Build();
+                //_unitOfWork.Category.Add(newSocialMediaPlugin);
+
                 _unitOfWork.Category.Add(cate);
                 _unitOfWork.Save();
                 TempData["Sucess"] = "Category Create Sucessfull";
