@@ -1,4 +1,6 @@
 ﻿using BanSach.DataAccess.Data;
+using BanSach.DataAccess.Repository.IRepository;
+using BanSach.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace WebBanSach.DesignPattern_Tam.Command
@@ -6,34 +8,38 @@ namespace WebBanSach.DesignPattern_Tam.Command
     public class DeleteCommand<T> : ICommand<T> where T : class
     {
         private readonly ApplicationDbContext _db;
+        private readonly IUnitOfWork _unitOfWork;
         private readonly int _itemId;
-        private T _item;
+        private Category _item;
 
         public DeleteCommand(ApplicationDbContext db, int itemId)
         {
             _db = db;
-            _itemId = itemId;
+            _itemId =itemId;
+        }
+            public DeleteCommand(ApplicationDbContext db, int itemId, IUnitOfWork unitOfWork)
+        {
+            _db = db;
+            _itemId = itemId;   
+            _unitOfWork = unitOfWork;
         }
 
         public void Execute()
         {
-            _item = _db.Set<T>().Find(_itemId);
+            _item = _db.Set<Category>().Find(_itemId);
             if (_item != null)
             {
-                _db.Set<T>().Remove(_item);
+                _db.Set<Category>().Remove(_item);
                 _db.SaveChanges();
             }
         }
 
-         public void Undo()
+        public void Undo()
         {
             if (_item != null)
             {
-                using (var undo = new ApplicationDbContext(new DbContextOptions<ApplicationDbContext>()))
-                {
-                    undo.Set<T>().Add(_item);
-                    undo.SaveChanges();
-                }
+                _unitOfWork.Category.Add(_item);
+                _unitOfWork.Save();
             }
         }
     }

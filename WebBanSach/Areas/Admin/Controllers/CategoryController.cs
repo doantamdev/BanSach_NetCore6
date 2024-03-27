@@ -2,7 +2,9 @@
 using BanSach.DataAccess.Repository.IRepository;
 using BanSach.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using WebBanSach.DesignPattern_Tam.Command;
+using WebBanSach.DesignPattern_Tam.Observer;
 
 
 namespace WebBanSach.Areas.Admin.Controllers
@@ -13,11 +15,13 @@ namespace WebBanSach.Areas.Admin.Controllers
         private readonly IUnitOfWork _unitOfWork;
         private readonly ApplicationDbContext _db;
         private static Stack<IUndoItem> _undoItem = new Stack<IUndoItem>();
-        public CategoryController(IUnitOfWork unitOfWork, Stack<IUndoItem> undoItem,ApplicationDbContext db)
+        private readonly CategoryObserver _publisher;
+        public CategoryController(IUnitOfWork unitOfWork, Stack<IUndoItem> undoItem,ApplicationDbContext db, CategoryObserver categoryObserver)
         {
             _unitOfWork = unitOfWork;
             _undoItem = undoItem;
-            _db = db;
+            _db = db;   
+            _publisher = categoryObserver;
         }
         public IActionResult Index()
         {
@@ -41,6 +45,7 @@ namespace WebBanSach.Areas.Admin.Controllers
                 _unitOfWork.Category.Add(cate);
                 _unitOfWork.Save();
                 TempData["Sucess"] = "Category Create Sucessfull";
+                _publisher.Notify("New category added: " + cate.Name);
                 return RedirectToAction("Index");
             }
             return View(cate);
@@ -90,7 +95,7 @@ namespace WebBanSach.Areas.Admin.Controllers
                 return NotFound();
             }
 
-            var command = new DeleteCommand<Category>(_db,id.Value);
+            var command = new DeleteCommand<Category>(_db, cateFromDb.Id, _unitOfWork);
             _undoItem.Push(command);
             command.Execute();
 
@@ -124,8 +129,12 @@ namespace WebBanSach.Areas.Admin.Controllers
             if (_undoItem.Count > 0)
             {
                 var undoCommand = _undoItem.Pop();
-                undoCommand.Undo();
-                TempData["Success"] = "Undo operation successful.";
+                // Chuyển đối số DbContextOptions vào constructor của ApplicationDbContext
+                using (var undo = new ApplicationDbContext(new DbContextOptions<ApplicationDbContext>()))
+                {
+                    undoCommand.Undo();
+                    TempData["Success"] = "Undo operation successful.";
+                }
             }
             else
             {

@@ -10,6 +10,7 @@ using Bansach.Utility;
 using BanSach.Models;
 using WebBanSach.Common;
 using WebBanSach.DesignPattern_Tam.Command;
+using WebBanSach.DesignPattern_Tam.Observer;
 
 
 
@@ -27,8 +28,8 @@ builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IDbInitializer, DbInitializer>();
 builder.Services.AddDbContext<ApplicationDbContext>(
         options => options.UseSqlServer(
-            builder.Configuration.GetConnectionString("DefaultConnection")     
-    ));
+              builder.Configuration.GetConnectionString("DefaultConnection")
+    ), ServiceLifetime.Scoped);
 
 Global.ConnectionString =  builder.Configuration.GetConnectionString("DefaultConnection");
 
@@ -64,6 +65,7 @@ builder.Services.AddSession();
 builder.Services.AddScoped<IEmailSender,EmailSender>();
 builder.Services.AddScoped<INotiService, NotiService>();
 builder.Services.AddSingleton<Stack<IUndoItem>>();
+builder.Services.AddSingleton<CategoryObserver>();
 
 builder.Services.AddTransient(typeof(DeleteCommand<>)); // Đảm bảo DeleteCommand được đăng ký
 
