@@ -5,6 +5,7 @@ using BanSach.Models.ViewModel;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System.IO;
+using WebBanSach.Areas.IteratorPattern;
 
 
 namespace WebBanSach.Areas.Admin.Controllers
@@ -72,7 +73,16 @@ namespace WebBanSach.Areas.Admin.Controllers
         [HttpGet]
         public IActionResult GetAll()
         {
-            var companyList = _unitOfWork.Company.GetAll();
+            //var companyList = _unitOfWork.Company.GetAll();
+
+            IIterator<Company> iterator = new CompanyIterator(_unitOfWork);
+            List<Company> companyList = new List<Company>();
+
+            while (iterator.HasNext())
+            {
+                companyList.Add(iterator.Next());
+            }
+
             return Json(new { data = companyList });
         }
 

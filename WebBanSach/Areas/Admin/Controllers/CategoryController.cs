@@ -3,6 +3,7 @@ using BanSach.DataAccess.Repository.IRepository;
 using BanSach.Models;
 using Microsoft.AspNetCore.Mvc;
 using WebBanSach.Areas.Admin.DecoratorPattern;
+using WebBanSach.Areas.IteratorPattern;
 
 
 namespace WebBanSach.Areas.Admin.Controllers
@@ -17,8 +18,17 @@ namespace WebBanSach.Areas.Admin.Controllers
         }
         public IActionResult Index()
         {
-            IEnumerable<Category> objCategoryList = _unitOfWork.Category.GetAll();
-            return View(objCategoryList);
+            //IEnumerable<Category> objCategoryList = _unitOfWork.Category.GetAll();
+
+            IIterator<Category> iterator = new CateIterator(_unitOfWork);
+            List<Category> displayedCategories = new List<Category>();
+
+            while (iterator.HasNext())
+            {
+                displayedCategories.Add(iterator.Next());
+            }
+
+            return View(displayedCategories);
         }
         public IActionResult Create()
         {
@@ -65,6 +75,7 @@ namespace WebBanSach.Areas.Admin.Controllers
             }
             return View(categoryfromDbFirst);
         }
+
         [HttpPost]
         [ValidateAntiForgeryToken] //chống giả mạo method
         public IActionResult Edit(Category cate)
@@ -95,6 +106,7 @@ namespace WebBanSach.Areas.Admin.Controllers
             }
             return View(cateFromDb);
         }
+
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken] //chống giả mạo method
         public IActionResult DeletePost(int? id)

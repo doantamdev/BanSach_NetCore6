@@ -5,6 +5,7 @@ using BanSach.Models.ViewModel;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System.IO;
+using WebBanSach.Areas.IteratorPattern;
 
 
 
@@ -31,8 +32,6 @@ namespace WebBanSach.Areas.Admin.Controllers
             ProductVM productVM = new ProductVM();
 
             productVM.product = new Product();
-
-        
 
             productVM.CategoryList = _unitOfWork.Category.GetAll().Select(
                 u => new SelectListItem
@@ -111,9 +110,19 @@ namespace WebBanSach.Areas.Admin.Controllers
         [HttpGet]
         public IActionResult GetAll()
         {
-            var productList = _unitOfWork.Product.GetAll(includeProperties: "Category,CoverType");
-            return Json(new { data = productList });
+            //var productList = _unitOfWork.Product.GetAll(includeProperties: "Category,CoverType");
+
+            IIterator<Product> iterator = new ProductIterator(_unitOfWork);
+            List<Product> displayed = new List<Product>();
+
+            while (iterator.HasNext())
+            {
+                displayed.Add(iterator.Next());
+            }
+
+            return Json(new { data = displayed });
         }
+
         [HttpDelete]
         public IActionResult DeletePost(int? id)
         {
