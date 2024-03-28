@@ -16,6 +16,8 @@ using WebBanSach.Common;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddRazorPages();
+builder.Services.AddSignalR();
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
@@ -98,6 +100,10 @@ SeedDatabase();
 
 app.UseAuthentication();
 app.UseAuthorization();
+
+app.MapRazorPages(); //map identity vs project
+
+app.MapHub<ChatHub>("/chatHub");
 
 
 app.MapRazorPages(); //map identity vs project
