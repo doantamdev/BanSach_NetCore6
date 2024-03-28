@@ -5,6 +5,7 @@ using BanSach.Models.ViewModel;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System.IO;
+using WebBanSach.Areas.Admin.SingletonPattern;
 using WebBanSach.Areas.IteratorPattern;
 
 
@@ -28,7 +29,10 @@ namespace WebBanSach.Areas.Admin.Controllers
 
         public IActionResult Upsert(int? id)
         {
-            Company company = new Company();
+            //Company company = new Company();
+
+            CompanySingleton companySingleton = CompanySingleton.Instance;
+            Company company = companySingleton.CompanyInstance;
 
 
             if (id == null || id == 0)
