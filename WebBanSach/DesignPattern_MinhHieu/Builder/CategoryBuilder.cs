@@ -9,7 +9,7 @@ namespace WebBanSach.DesignPattern_MinhHieu.Builder
         public CategoryBuilder BuilderWithName(string name)
         {
             _category.Name = name;
-            return this;
+           
         }
 
         public CategoryBuilder BuilderWithDisplayOrder(int displayOrder)
